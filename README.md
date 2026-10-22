@@ -1,43 +1,10 @@
-# Vanilla JS Project
+# VanillaJS
 
-This is a web app for a tech product store.
+VanillaJS is a web application for a technology products store. The project
+uses a Java Spring Boot backend and a frontend made with HTML, CSS, and
+Vanilla JavaScript.
 
-The app has two pages:
-
-- A local product page with data from MySQL.
-- An external API page with Rick and Morty data.
-
-## Main tools
-
-### Backend
-
-- Java 21.
-- Spring Boot 4.1.1.
-- Spring MVC.
-- Spring Data JPA.
-- Hibernate.
-- Thymeleaf.
-- MySQL 8.x.
-- Maven Wrapper.
-
-### Frontend
-
-- HTML5.
-- CSS3.
-- CSS Flexbox.
-- CSS Grid.
-- Tailwind CSS from a CDN.
-- Plain JavaScript.
-
-### External service
-
-The second page uses the Rick and Morty API:
-
-```text
-https://rickandmortyapi.com/api
-```
-
-## Pages
+## Project pages
 
 ### Page 1: Local products
 
@@ -47,16 +14,23 @@ URL:
 http://localhost:8080/products
 ```
 
-This page:
+This page shows products stored in a MySQL database.
 
-- Reads products from MySQL.
-- Shows the product name, price, stock, and description.
-- Uses Thymeleaf to build the page.
-- Has a live search by name and description.
-- Shows the number of visible products.
-- Has a reset button.
+It includes:
 
-### Page 2: External API
+- Product name.
+- Product price.
+- Product stock.
+- Product description.
+- Search by name or description.
+- Visible product counter.
+- Reset button.
+- Message when there are no results.
+
+The backend uses Spring Data JPA to read the products. Spring MVC sends the
+data to the Thymeleaf template.
+
+### Page 2: Rick and Morty products
 
 URL:
 
@@ -64,224 +38,214 @@ URL:
 http://localhost:8080/products-1
 ```
 
-This page shows Rick and Morty characters as store products.
+This page uses characters from the public Rick and Morty API. The characters
+are shown as product cards.
 
-It uses three API resources:
+It includes:
 
-1. `/character` loads the characters.
-2. `/location` loads the character origin.
-3. `/episode` loads the first episode.
+- Search by character name.
+- Filter by character status.
+- Alive, Dead, and Unknown status options.
+- Four-second search delay.
+- Product counter.
+- Reset button.
+- Character image and information.
+- Expandable card details.
+- Small browser cache for repeated searches.
 
-The last two requests are made when the user opens a product card. The episode
-request is made inside the location request flow.
+## Rick and Morty API
 
-The page also has:
+The page uses three API endpoints.
 
-- A name search.
-- A status filter.
-- A four-second search delay.
-- A reset button.
-- A product counter.
-- A small browser cache for repeated searches.
+### 1. Character endpoint
 
-## Hardware requirements
+```text
+GET https://rickandmortyapi.com/api/character
+```
 
-These values are for local development.
+This is the first request. It returns the characters and links to related
+locations and episodes.
 
-| Resource | Minimum | Recommended |
-|---|---:|---:|
-| CPU | 2 cores | 4 cores |
-| RAM | 4 GB | 8 GB |
-| Free disk space | 2 GB | 5 GB |
-| Screen | 1280 x 720 | 1920 x 1080 |
-| Internet | Needed for Page 2 | Stable connection |
+### 2. Location endpoint
 
-A dedicated graphics card is not needed.
+```text
+GET https://rickandmortyapi.com/api/location/{id}
+```
 
-## Software requirements
+This request runs when the user opens a character card. The URL comes from the
+character `origin.url` value.
 
-Install these tools:
+### 3. Episode endpoint
 
-- JDK 21.
-- MySQL Server 8.x.
-- A modern web browser.
-- Git, if you need to download or update the project.
+```text
+GET https://rickandmortyapi.com/api/episode/{id}
+```
 
-The project includes Maven Wrapper files. A separate Maven installation is not
-needed.
+This request also runs when the user opens a character card. The URL comes
+from the first value in the character `episode` list.
+
+The request flow is:
+
+```text
+character
+   ├── origin.url  → location
+   └── episode[0]  → episode
+```
+
+The location and episode requests depend on information returned by the
+character request. For this reason, they are nested requests.
+
+## Frontend technologies
+
+### HTML5
+
+HTML defines the page structure, navigation, forms, product cards, messages,
+and page sections.
+
+### Vanilla JavaScript
+
+The project uses JavaScript without a frontend framework.
+
+JavaScript handles:
+
+- Local product search.
+- Rick and Morty API requests.
+- Status filtering.
+- Search delay.
+- Browser cache.
+- Product card details.
+- Result counters.
+- Reset buttons.
+
+### CSS3
+
+The custom stylesheet defines:
+
+- Product cards.
+- Colors.
+- Borders.
+- Spacing.
+- Images.
+- Status labels.
+- Hover effects.
+- Loading and empty-result messages.
+
+### Flexbox
+
+Flexbox is used for:
+
+- Navigation content.
+- Search controls.
+- Product price and stock rows.
+- Character card headers.
+- Vertical card layout.
+
+### CSS Grid
+
+CSS Grid organizes the product cards in responsive columns. The page uses
+different column counts depending on the screen width.
+
+### Media queries and responsive design
+
+The interface changes its layout for small, medium, and large screens. This
+makes the pages usable on computers, tablets, and mobile devices.
+
+### Tailwind CSS
+
+Tailwind CSS is loaded from a CDN. Its utility classes are used for:
+
+- Layout.
+- Responsive columns.
+- Flexbox rows.
+- Spacing.
+- Colors.
+- Text styles.
+- Borders.
+- Buttons.
+
+## Backend technologies
+
+- Java 21.
+- Spring Boot 4.1.1.
+- Spring MVC.
+- Spring Data JPA.
+- Hibernate.
+- Thymeleaf.
+- Bean Validation.
+- MySQL 8.x.
+- Maven Wrapper.
 
 ## Project structure
 
+The repository uses a simple monorepo structure. The backend and frontend are
+kept in the same repository, but each application has its own responsibility.
+
 ```text
 BaseProyect/
-|-- pom.xml
-|-- mvnw
-|-- mvnw.cmd
-|-- README.md
-|-- src/
-|   |-- main/
-|   |   |-- java/com/inventory/
-|   |   |   |-- InventoryApplication.java
-|   |   |   |-- controller/
-|   |   |   |   |-- ApiProductsController.java
-|   |   |   |   |-- ProductController.java
-|   |   |   |-- model/Product.java
-|   |   |   |-- repository/ProductRepository.java
-|   |   |   |-- service/ProductService.java
-|   |   |-- resources/
-|   |       |-- application.properties
-|   |       |-- static/css/styles.css
-|   |       |-- static/js/products.js
-|   |       |-- static/js/products-1.js
-|   |       |-- templates/products.html
-|   |       |-- templates/products-1.html
-|   |-- test/
-|       |-- java/com/inventory/InventoryApplicationTests.java
+├── apps/
+│   ├── backend/
+│   │   ├── pom.xml
+│   │   └── src/
+│   │       ├── main/java/com/inventory/
+│   │       │   ├── controller/
+│   │       │   ├── model/
+│   │       │   ├── repository/
+│   │       │   └── service/
+│   │       ├── main/resources/
+│   │       │   └── application.properties
+│   │       └── test/
+│   └── frontend/
+│       ├── package.json
+│       └── src/main/resources/
+│           ├── static/
+│           │   ├── css/
+│           │   └── js/
+│           └── templates/
+├── packages/
+│   └── api-contract/
+├── infra/
+├── .github/
+│   └── workflows/
+├── pom.xml
+├── mvnw
+└── mvnw.cmd
 ```
 
-## Backend layers
+### Backend folder
 
-- `controller` receives web requests.
-- `service` manages product actions.
-- `repository` reads data with JPA.
-- `model` defines the `Product` database object.
-- `templates` contains the HTML pages.
-- `static` contains CSS and JavaScript files.
+The backend folder contains:
 
-## Database setup
+- Spring Boot application.
+- Controllers.
+- Services.
+- Repositories.
+- Product model.
+- Database configuration.
+- Java tests.
 
-The database settings are in:
+### Frontend folder
+
+The frontend folder contains:
+
+- HTML templates.
+- CSS files.
+- JavaScript files.
+- Frontend package information.
+
+### Packages folder
+
+The packages folder is reserved for shared contracts and reusable code. The
+Rick and Morty API is external, so it is not copied into this folder.
+
+## Database configuration
+
+The application uses a local MySQL database with these default values:
 
 ```text
-src/main/resources/application.properties
+Host: localhost
+Port: 3306
+Database: inventory_db
 ```
 
-The app uses this database URL:
-
-```text
-jdbc:mysql://localhost:3306/inventory_db
-```
-
-The database name is `inventory_db`.
-
-The app reads the user and password from environment variables:
-
-```properties
-spring.datasource.username=${DB_USERNAME}
-spring.datasource.password=${DB_PASSWORD}
-```
-
-Do not write real passwords in the source code.
-
-### Windows PowerShell
-
-Set the database values in the current terminal:
-
-```powershell
-$env:DB_USERNAME = "your_user"
-$env:DB_PASSWORD = "your_password"
-```
-
-### Git Bash
-
-Set the database values in the current terminal:
-
-```bash
-export DB_USERNAME="your_user"
-export DB_PASSWORD="your_password"
-```
-
-The app can create the database when the MySQL user has the needed rights.
-Hibernate updates the table structure during development.
-
-## Run on Windows
-
-Open PowerShell in the project folder:
-
-```powershell
-$env:DB_USERNAME = "your_user"
-$env:DB_PASSWORD = "your_password"
-.\mvnw.cmd spring-boot:run
-```
-
-Open these URLs in your browser:
-
-```text
-http://localhost:8080/products
-http://localhost:8080/products-1
-```
-
-## Run on Linux or macOS
-
-Open a terminal in the project folder:
-
-```bash
-export DB_USERNAME="your_user"
-export DB_PASSWORD="your_password"
-chmod +x mvnw
-./mvnw spring-boot:run
-```
-
-## Build and test
-
-Run tests on Windows:
-
-```powershell
-.\mvnw.cmd test
-```
-
-Run tests on Linux or macOS:
-
-```bash
-./mvnw test
-```
-
-Create the application package on Windows:
-
-```powershell
-.\mvnw.cmd package
-```
-
-Create the application package on Linux or macOS:
-
-```bash
-./mvnw package
-```
-
-The project has a Spring Boot context test in:
-
-```text
-src/test/java/com/inventory/InventoryApplicationTests.java
-```
-
-## Common problems
-
-### MySQL connection error
-
-Check these points:
-
-1. MySQL Server is running.
-2. MySQL uses port `3306`.
-3. `DB_USERNAME` is set.
-4. `DB_PASSWORD` is set.
-5. The user can access `inventory_db`.
-
-### Port 8080 is busy
-
-Stop the program that uses port `8080`, or change `server.port` in
-`application.properties`.
-
-### Page 2 has no data
-
-Check these points:
-
-1. The computer has Internet access.
-2. The Rick and Morty API is available.
-3. The browser allows the API requests.
-
-## Safe project rules
-
-- Do not save passwords in the repository.
-- Do not save private keys or access tokens in the repository.
-- Use environment variables for local secrets.
-- Review files before you send them to a remote repository.
+The database username and password are read from environment variables. This
+keeps private database information outside the source code.

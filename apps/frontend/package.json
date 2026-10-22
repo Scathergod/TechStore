@@ -1,0 +1,9 @@
+{
+  "name": "inventory-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "echo Frontend assets are copied by the backend Maven build",
+    "test": "echo No frontend tests configured"
+  }
+}
